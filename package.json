@@ -1,0 +1,33 @@
+{
+  "name": "fs-mooc-part-13-relational-blogs",
+  "version": "1.0.0",
+  "description": "blogs app using relational DB",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikohyppa/fs-mooc-part-13-relational-blogs.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "ikohyppa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ikohyppa/fs-mooc-part-13-relational-blogs/issues"
+  },
+  "homepage": "https://github.com/ikohyppa/fs-mooc-part-13-relational-blogs#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "sequelize": "^6.21.3"
+  }
+}
