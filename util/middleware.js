@@ -3,15 +3,21 @@ const jwt = require('jsonwebtoken');
 const { SECRET } = require('./config');
 
 const errorHandler = (error, request, response, next) => {
-  const errors = {
-    SequelizeDatabaseError: { title: 'database error', status: 500 },
-    SequelizeValidationError: { title: 'validation error', status: 400 },
-    JsonWebTokenError: { title: 'authorization error', status: 401 },
+  const errorTitles = {
+    SequelizeDatabaseError: 'database error',
+    SequelizeValidationError: 'validation error',
+    JsonWebTokenError: 'authorization error',
+  };
+
+  const errorStatus = {
+    SequelizeDatabaseError: 500,
+    SequelizeValidationError: 400,
+    JsonWebTokenError: 401,
   };
 
   if (error.name) {
-    const title = errors[error.name].title || error.name || 'error';
-    const status = errors[error.name].status || error.status || 400;
+    const title = errorTitles[error.name] || error.name || 'error';
+    const status = errorStatus[error.name] || error.status || 400;
     const message = error.message.replace(new RegExp('"', 'g'), "'");
 
     return response.status(status).json({ [title]: message });

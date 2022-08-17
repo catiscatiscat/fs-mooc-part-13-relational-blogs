@@ -21,9 +21,13 @@ const blogFinder = async (req, res, next) => {
   next();
 };
 
-router.delete('/:id', blogFinder, async (req, res) => {
-  if (req.blog) {
-    await req.blog.destroy();
+router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
+  if (req.blog && req.decodedToken) {
+    if (req.blog.userId === null || req.blog.userId === req.decodedToken.id) {
+      await req.blog.destroy();
+    } else {
+      res.status(403).json({ error: 'unauthorized' });
+    }
   }
   res.status(204).end();
 });
