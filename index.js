@@ -5,6 +5,7 @@ const app = express();
 const { PORT } = require('./util/config');
 const { connectToDatabase } = require('./util/db');
 
+const authorRouter = require('./controllers/authors');
 const blogsRouter = require('./controllers/blogs');
 const healthRouter = require('./controllers/health');
 const loginRouter = require('./controllers/login');
@@ -13,6 +14,7 @@ const { errorHandler } = require('./util/middleware');
 
 app.use(express.json());
 
+app.use('/api/authors', authorRouter);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/health', healthRouter);
 app.use('/api/login', loginRouter);
