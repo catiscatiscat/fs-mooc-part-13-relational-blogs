@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
     ],
     group: 'author',
     order: [
+      [sequelize.fn('SUM', sequelize.col('likes')), 'DESC'],
       [sequelize.fn('COUNT', sequelize.col('title')), 'DESC'],
       ['author', 'ASC'],
     ],
