@@ -11,4 +11,5 @@ Blog.belongsToMany(User, { through: UserBlogs, as: 'users_marked' });
 module.exports = {
   Blog,
   User,
+  UserBlogs,
 };
