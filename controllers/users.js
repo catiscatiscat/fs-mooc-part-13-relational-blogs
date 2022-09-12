@@ -22,19 +22,18 @@ router.get('/:id', async (req, res, next) => {
     attributes: ['name', 'username'],
     include: {
       model: Blog,
-      as: 'marked_blogs',
-      attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
+      as: 'readings',
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'userId', 'user_blogs.id'],
+      },
       through: {
-        attributes: [],
+        as: 'readinglist',
+        attributes: ['id', 'read'],
       },
     },
   });
   if (user) {
-    res.json({
-      name: user.name,
-      username: user.username,
-      readings: user.marked_blogs,
-    });
+    res.json(user);
   } else {
     res.status(404).end();
   }
