@@ -1,14 +1,14 @@
 const router = require('express').Router();
 
 const { UserBlogs } = require('../models');
-const { tokenExtractor } = require('../util/middleware');
+const { checkAccess, tokenExtractor } = require('../util/middleware');
 
-router.post('/', async (req, res, next) => {
+router.post('/', tokenExtractor, checkAccess, async (req, res, next) => {
   const userBlogs = await UserBlogs.create(req.body);
   res.json(userBlogs);
 });
 
-router.put('/:id', tokenExtractor, async (req, res, next) => {
+router.put('/:id', tokenExtractor, checkAccess, async (req, res, next) => {
   const userId = req.decodedToken.id;
   const blogId = req.params.id;
   const user_blogs = await UserBlogs.findOne({

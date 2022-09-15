@@ -3,8 +3,10 @@ const jwt = require('jsonwebtoken');
 
 const { SECRET } = require('./config');
 const { customErrors } = require('./constants');
+const User = require('../models/user');
 
 const errorHandler = (error, request, response, next) => {
+  console.log('ERROR:', error);
   const errorTitles = {
     SequelizeDatabaseError: 'database error',
     SequelizeValidationError: 'validation error',
@@ -43,4 +45,16 @@ const tokenExtractor = (req, res, next) => {
   next();
 };
 
-module.exports = { errorHandler, tokenExtractor };
+const checkAccess = async (req, res, next) => {
+  const user = await User.findByPk(req.decodedToken.id);
+
+  if (user.disabled) {
+    return res
+      .status(401)
+      .json({ error: 'account disabled, please contact admin' });
+  }
+
+  next();
+};
+
+module.exports = { errorHandler, checkAccess, tokenExtractor };
