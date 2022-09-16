@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', tokenExtractor, checkAccess, async (req, res, next) => {
-  if (req.decodedToken) {
+  if (req.decodedToken && req.authUser) {
     const user = await User.findByPk(req.decodedToken.id);
     const blog = await Blog.create({ ...req.body, userId: user.id });
     res.json(blog);
@@ -54,14 +54,15 @@ router.delete(
   checkAccess,
   blogFinder,
   async (req, res) => {
-    if (req.blog && req.decodedToken) {
+    if (req.blog && req.decodedToken && req.authUser) {
       if (req.blog.userId === null || req.blog.userId === req.decodedToken.id) {
         await req.blog.destroy();
       } else {
         res.status(403).json({ error: 'unauthorized' });
       }
+
+      res.status(204).end();
     }
-    res.status(204).end();
   }
 );
 

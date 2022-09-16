@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { SECRET } = require('./config');
 const { customErrors } = require('./constants');
-const User = require('../models/user');
+const { Session, User } = require('../models');
 
 const errorHandler = (error, request, response, next) => {
   console.log('ERROR:', error);
@@ -38,7 +38,9 @@ const errorHandler = (error, request, response, next) => {
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization');
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+    const token = authorization.substring(7);
+    req.decodedToken = jwt.verify(token, SECRET);
+    req.token = token;
   } else {
     res.status(401).json({ error: 'token missing' });
   }
@@ -52,6 +54,15 @@ const checkAccess = async (req, res, next) => {
     return res
       .status(401)
       .json({ error: 'account disabled, please contact admin' });
+  }
+
+  const tokenUser = await Session.findOne({ where: { token: req.token } });
+  if (!tokenUser) {
+    res.status(401).json({ error: 'token revoked' });
+  }
+
+  if (!user.disabled && tokenUser) {
+    req.authUser = true;
   }
 
   next();
